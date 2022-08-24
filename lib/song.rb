@@ -49,4 +49,26 @@ class Song
     song.save
   end
 
+
+  def self.new_from_db(row)
+    Song.new(name: row[1], album: row[2], id: row[0])
+  end
+  def self.all
+    query=<<-SQL
+      SELECT * FROM songs
+    SQL
+    DB[:conn].execute(query).map{
+      |item|
+      Song.new_from_db(item)
+    }
+  end
+
+  def self.find_by_name(namee)
+    Song.all.find{
+      |item|
+      item.name == namee
+    }
+   end
+
+
 end
